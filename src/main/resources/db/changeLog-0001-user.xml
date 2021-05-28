@@ -43,10 +43,10 @@
     <changeSet id="create user_roles table" author="Maria Romanovskaia">
         <createTable tableName="user_roles">
             <column name="user_id" type="uuid">
-                <constraints nullable="false"/>
+                <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="role_id" type="uuid">
-                <constraints nullable="false"/>
+                <constraints primaryKey="true" nullable="false"/>
             </column>
         </createTable>
     </changeSet>
