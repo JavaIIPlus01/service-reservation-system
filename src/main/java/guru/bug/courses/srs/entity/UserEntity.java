@@ -36,7 +36,10 @@ public class UserEntity implements Serializable {
     private byte[] passwordHash;
 
     @ManyToMany
-    @JoinColumn(name = "role_id", nullable = false)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
+    )
     private List<RoleEntity> roles;
 
     public UUID getId() {
