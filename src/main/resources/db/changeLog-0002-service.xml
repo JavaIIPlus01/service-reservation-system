@@ -2,6 +2,57 @@
 <databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
-
-
+     <changeSet id="create services table" author="Evgeny Shulgin">
+         <createTable tableName="services">
+             <column name="id" type="uuid">
+                 <constraints primaryKey="true" nullable="false"/>
+             </column>
+             <column name="name" type="varchar(50)">
+                 <constraints nullable="false" unique="true"/>
+             </column>
+             <column name="description" type="varchar(50)"/>
+             <column name="default_duration_minutes" type="integer">
+                 <constraints nullable="false" unique="true"/>
+             </column>
+         </createTable>
+     </changeSet>
+    <changeSet id="create table service_providers" author="Evgeny Shulgin">
+         <createTable tableName="service_providers">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+             <column name="master_user_id" type="uuid">
+                 <constraints nullable="false" foreignKeyName="fk_service_providers_user_id" referencedTableName="users" referencedColumnNames="id"/>
+             </column>
+             <column name="service_id" type="uuid">
+                 <constraints nullable="false" foreignKeyName="fk_service_providers_service_id" referencedTableName="services" referencedColumnNames="id"/>
+             </column>
+            <column name="notes" type="varchar(500)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="crete table reservations" author="Evgeny Shulgin">
+       <createTable tableName="reservations">
+           <column name="id" type="uuid">
+               <constraints primaryKey="true" nullable="false"/>
+           </column>
+           <column name="service_provider_id" type="uuid">
+               <constraints nullable="false" foreignKeyName="fk_reservations_service_provider_id" referencedTableName="service_providers" referencedColumnNames="id"/>
+           </column>
+           <column name="client_user_id" type="uuid">
+               <constraints nullable="false" foreignKeyName="fk_reservations_user_id" referencedTableName="users" referencedColumnNames="id"/>
+           </column>
+           <column name="scheduled_start_time" type="timestamp">
+               <constraints unique="true" nullable="false"/>
+           </column>
+           <column name="scheduled_finish_time" type="timestamp">
+               <constraints unique="true" nullable="false"/>
+           </column>
+           <column name="actual_start_time" type="timestamp">
+               <constraints nullable="false"/>
+           </column>
+           <column name="actual_finish_time" type="timestamp">
+               <constraints nullable="false"/>
+           </column>
+       </createTable>
+    </changeSet>
 </databaseChangeLog>
