@@ -2,15 +2,14 @@ package guru.bug.courses.srs.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
 @Table(name = "users")
 public class UserEntity implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", insertable = false, updatable = false, nullable = false)
     private UUID id;
 
@@ -40,7 +39,7 @@ public class UserEntity implements Serializable {
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
-    private List<RoleEntity> roles;
+    private Set<RoleEntity> roles;
 
     public UUID getId() {
         return id;
@@ -106,11 +105,11 @@ public class UserEntity implements Serializable {
         this.passwordHash = passwordHash;
     }
 
-    public List<RoleEntity> getRoles() {
+    public Set<RoleEntity> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<RoleEntity> roles) {
+    public void setRoles(Set<RoleEntity> roles) {
         this.roles = roles;
     }
 

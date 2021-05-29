@@ -9,11 +9,10 @@ import java.util.UUID;
 @Table(name = "roles")
 public class RoleEntity implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="id", insertable = false, updatable = false, nullable = false)
     private UUID id;
 
-    @Column(name="name", length = 50, nullable = false)
+    @Column(name="name", length = 50, unique = true, nullable = false)
     private String name;
 
     public UUID getId() {
