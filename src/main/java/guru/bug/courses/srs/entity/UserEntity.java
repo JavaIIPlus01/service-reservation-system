@@ -10,7 +10,7 @@ import java.util.UUID;
 @Table(name = "users")
 public class UserEntity implements Serializable {
     @Id
-    @Column(name = "id", insertable = false, updatable = false, nullable = false)
+    @Column(name = "id", updatable = false)
     private UUID id;
 
     @Column(name = "login_name", length = 50, nullable = false)

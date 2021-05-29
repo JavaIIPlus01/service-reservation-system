@@ -9,7 +9,7 @@ import java.util.UUID;
 @Table(name = "roles")
 public class RoleEntity implements Serializable {
     @Id
-    @Column(name="id", insertable = false, updatable = false, nullable = false)
+    @Column(name="id", updatable = false)
     private UUID id;
 
     @Column(name="name", length = 50, unique = true, nullable = false)
