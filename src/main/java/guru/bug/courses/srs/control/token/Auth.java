@@ -1,8 +1,6 @@
 package guru.bug.courses.srs.control.token;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Auth {
 
     private final String username;
