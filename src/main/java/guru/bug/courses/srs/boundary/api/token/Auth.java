@@ -1,8 +1,13 @@
 package guru.bug.courses.srs.boundary.api.token;
 
+import javax.validation.constraints.NotBlank;
+
 public class Auth {
 
+    @NotBlank
     private String login;
+
+    @NotBlank
     private String password;
 
     public void setLogin(String login) {

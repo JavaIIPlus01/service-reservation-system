@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.time.ZonedDateTime;
@@ -26,7 +27,7 @@ public class TokenResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public TokenData login(Auth auth) throws Exception {
+    public TokenData login(@Valid Auth auth) throws Exception {
         var user = userControl.findByLogin(auth.getLogin());
         LOG.debug("Trying to obtain token for user {}", user.getLoginName());
         byte[] passwordHash = PasswordHashEngine.hash(auth.getPassword(), user.getSalt());
@@ -35,7 +36,7 @@ public class TokenResource {
         }
 
         var expires = ZonedDateTime.now().plusMonths(3);
-        String token = Jwt.issuer("http://localhost:8080/issuer")
+        String token = Jwt.issuer("https://api.srs.guru.bug/issuer")
                 .upn(user.getLoginName())
                 .groups(Set.of("user"))
                 .claim("uid", user.getId().toString())
