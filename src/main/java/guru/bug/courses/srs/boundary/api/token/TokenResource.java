@@ -28,9 +28,8 @@ public class TokenResource {
     @PermitAll
     public TokenData login(Auth auth) throws Exception {
         var user = userControl.findByLogin(auth.getLogin());
+        LOG.debug("Trying to obtain token for user {}", user.getLoginName());
         byte[] passwordHash = PasswordHashEngine.hash(auth.getPassword(), user.getSalt());
-        LOG.info("Password salt is {}" , user.getSalt());
-        LOG.info("Password hash is: {}", passwordHash);
         if (!Arrays.equals(passwordHash, user.getPasswordHash())) {
             throw new NotAuthorizedException(user.getLoginName());
         }
