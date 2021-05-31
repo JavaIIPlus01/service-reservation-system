@@ -6,130 +6,130 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-    @Entity
-    @Table(name = "users")
-    public class UserEntity implements Serializable {
-        @Id
-        @Column(name = "id", updatable = false)
-        private UUID id;
+@Entity
+@Table(name = "users")
+public class UserEntity implements Serializable {
+    @Id
+    @Column(name = "id", updatable = false)
+    private UUID id;
 
-        @Column(name = "login_name", length = 50, nullable = false)
-        private String loginName;
+    @Column(name = "login_name", length = 50, nullable = false)
+    private String loginName;
 
-        @Column(name = "first_name", length = 100)
-        private String firstName;
+    @Column(name = "first_name", length = 100)
+    private String firstName;
 
-        @Column(name = "last_name", length = 100)
-        private String lastName;
+    @Column(name = "last_name", length = 100)
+    private String lastName;
 
-        @Column(name = "phone", length = 30)
-        private String phone;
+    @Column(name = "phone", length = 30)
+    private String phone;
 
-        @Column(name = "email", length = 200)
-        private String email;
+    @Column(name = "email", length = 200)
+    private String email;
 
-        @Column(name = "salt", nullable = false)
-        private byte[] salt;
+    @Column(name = "salt", nullable = false)
+    private byte[] salt;
 
-        @Column(name = "password_hash", nullable = false)
-        private byte[] passwordHash;
+    @Column(name = "password_hash", nullable = false)
+    private byte[] passwordHash;
 
-        @ManyToMany
-        @JoinTable(name = "user_roles",
-                joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-                inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
-        )
-        private Set<RoleEntity> roles;
+    @ManyToMany
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
+    )
+    private Set<RoleEntity> roles;
 
-        public UUID getId() {
-            return id;
-        }
-
-        public void setId(UUID id) {
-            this.id = id;
-        }
-
-        public String getLoginName() {
-            return loginName;
-        }
-
-        public void setLoginName(String loginName) {
-            this.loginName = loginName;
-        }
-
-        public String getFirstName() {
-            return firstName;
-        }
-
-        public void setFirstName(String firstName) {
-            this.firstName = firstName;
-        }
-
-        public String getLastName() {
-            return lastName;
-        }
-
-        public void setLastName(String lastName) {
-            this.lastName = lastName;
-        }
-
-        public String getPhone() {
-            return phone;
-        }
-
-        public void setPhone(String phone) {
-            this.phone = phone;
-        }
-
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
-
-        public byte[] getSalt() {
-            return salt;
-        }
-
-        public void setSalt(byte[] salt) {
-            this.salt = salt;
-        }
-
-        public byte[] getPasswordHash() {
-            return passwordHash;
-        }
-
-        public void setPasswordHash(byte[] passwordHash) {
-            this.passwordHash = passwordHash;
-        }
-
-        public Set<RoleEntity> getRoles() {
-            return roles;
-        }
-
-        public void setRoles(Set<RoleEntity> roles) {
-            this.roles = roles;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            UserEntity that = (UserEntity) o;
-            return Objects.equals(id, that.id);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(id);
-        }
-
-        @Override
-        public String toString() {
-            return "UserEntity{" +
-                    "id=" + id +
-                    '}';
-        }
+    public UUID getId() {
+        return id;
     }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getLoginName() {
+        return loginName;
+    }
+
+    public void setLoginName(String loginName) {
+        this.loginName = loginName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public byte[] getSalt() {
+        return salt;
+    }
+
+    public void setSalt(byte[] salt) {
+        this.salt = salt;
+    }
+
+    public byte[] getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(byte[] passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
+    public Set<RoleEntity> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<RoleEntity> roles) {
+        this.roles = roles;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserEntity that = (UserEntity) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "UserEntity{" +
+                "id=" + id +
+                '}';
+    }
+}
