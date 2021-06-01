@@ -1,26 +1,28 @@
 package guru.bug.courses.srs.entity;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.io.Serializable;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "SERVICE_PROVIDERS")
-public class ServiceProviderEntity {
+@Table(name = "service_providers")
+public class ServiceProviderEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "uuid", updatable = false, nullable = false)
+    @Column(name = "id", updatable = false)
     private UUID id;
-    @Column(name = "master_user_id")
-    private Integer master;
-    @Column(name = "service_id")
-    private Integer service;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "service_id", nullable = false)
+    private ServiceEntity service;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "master_user_id", nullable = false)
+    private UserEntity master;
+
     @Column(name = "notes")
     private String notes;
-
-    @ManyToMany(mappedBy = "serviceProviderEntitySet")
-    Set<ServiceEntity> serviceEntitySet;
 
     public UUID getId() {
         return id;
@@ -30,20 +32,20 @@ public class ServiceProviderEntity {
         this.id = id;
     }
 
-    public Integer getMaster() {
-        return master;
-    }
-
-    public void setMaster(Integer master) {
-        this.master = master;
-    }
-
-    public Integer getService() {
+    public ServiceEntity getService() {
         return service;
     }
 
-    public void setService(Integer service) {
+    public void setService(ServiceEntity service) {
         this.service = service;
+    }
+
+    public UserEntity getMaster() {
+        return master;
+    }
+
+    public void setMaster(UserEntity master) {
+        this.master = master;
     }
 
     public String getNotes() {
@@ -52,5 +54,25 @@ public class ServiceProviderEntity {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ServiceProviderEntity that = (ServiceProviderEntity) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "ServiceProviderEntity{" +
+               "id=" + id +
+               '}';
     }
 }

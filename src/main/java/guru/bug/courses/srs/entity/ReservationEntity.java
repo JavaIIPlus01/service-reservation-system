@@ -1,27 +1,36 @@
 package guru.bug.courses.srs.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "RESERVATIONS")
-public class ReservationEntity {
+@Table(name = "reservations")
+public class ReservationEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "uuid", updatable = false, nullable = false)
+    @Column(name = "id", updatable = false)
     private UUID id;
-    @Column(name = "service_provider_id")
-    private Integer serviceProvider;
-    @Column(name = "client_user_id")
-    private Integer client;
-    @Column(name = "scheduled_start_time")
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "service_provider_id", nullable = false)
+    private ServiceProviderEntity serviceProvider;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "client_user_id", nullable = false)
+    private UserEntity client;
+
+    @Column(name = "scheduled_start_time", nullable = false)
     private LocalDateTime scheduledStartTime;
-    @Column(name = "scheduled_finish_time")
+
+    @Column(name = "scheduled_finish_time", nullable = false)
     private LocalDateTime scheduledEndTime;
+
     @Column(name = "actual_start_time")
     private LocalDateTime actualStartTime;
+
     @Column(name = "actual_finish_time")
     private LocalDateTime actualFinishTime;
 
@@ -33,19 +42,19 @@ public class ReservationEntity {
         this.id = id;
     }
 
-    public Integer getServiceProvider() {
+    public ServiceProviderEntity getServiceProvider() {
         return serviceProvider;
     }
 
-    public void setServiceProvider(Integer serviceProvider) {
+    public void setServiceProvider(ServiceProviderEntity serviceProvider) {
         this.serviceProvider = serviceProvider;
     }
 
-    public Integer getClient() {
+    public UserEntity getClient() {
         return client;
     }
 
-    public void setClient(Integer client) {
+    public void setClient(UserEntity client) {
         this.client = client;
     }
 
@@ -80,4 +89,25 @@ public class ReservationEntity {
     public void setActualFinishTime(LocalDateTime actualFinishTime) {
         this.actualFinishTime = actualFinishTime;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ReservationEntity that = (ReservationEntity) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "ReservationEntity{" +
+               "id=" + id +
+               '}';
+    }
+
 }

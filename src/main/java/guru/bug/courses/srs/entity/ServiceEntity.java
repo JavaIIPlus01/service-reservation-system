@@ -1,36 +1,35 @@
 package guru.bug.courses.srs.entity;
 
-import javax.persistence.*;
-import java.util.Set;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import java.io.Serializable;
+import java.util.Objects;
+import java.util.UUID;
 
 @Entity
-@Table(name = "SERVICES")
-public class ServiceEntity {
+@Table(name = "services")
+public class ServiceEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "uuid", updatable = false, nullable = false)
-    private Integer id;
-    @Column(name = "name")
+    @Column(name = "id", updatable = false)
+    private UUID id;
+
+    @Column(name = "name", nullable = false)
     private String name;
+
     @Column(name = "description")
     private String description;
-    @Column(name = "default_duration_minutes")
-    private Integer defaultDuration;
 
-    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumns({
-            @JoinColumn(name = "master_user_id"),
-            @JoinColumn(name = "service_id")
-    })
+    @Column(name = "default_duration_minutes", nullable = false)
+    private int defaultDuration;
 
-    Set<ServiceProviderEntity> serviceProviderEntitySet;
-
-    public Integer getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -50,11 +49,31 @@ public class ServiceEntity {
         this.description = description;
     }
 
-    public Integer getDefaultDuration() {
+    public int getDefaultDuration() {
         return defaultDuration;
     }
 
-    public void setDefaultDuration(Integer defaultDuration) {
+    public void setDefaultDuration(int defaultDuration) {
         this.defaultDuration = defaultDuration;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ServiceEntity that = (ServiceEntity) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "ServiceEntity{" +
+               "id=" + id +
+               '}';
     }
 }
