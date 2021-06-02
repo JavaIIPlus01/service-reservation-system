@@ -7,8 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.*;
 
@@ -17,23 +15,18 @@ import java.util.*;
 public class RoleControl {
     private static final Logger LOG = LoggerFactory.getLogger(RoleControl.class);
 
-    @PersistenceContext
-    EntityManager em;
-
     @Inject
     RoleDAO roleDAO;
 
     public RoleEntity createRole(RoleEntity role) {
-        var id = UUID.randomUUID();
-        role.setId(id);
-        em.persist(role);
-        LOG.debug("Created role {}", role);
-        return role;
+        var roleObj = roleDAO.createRole(role.getName());
+        LOG.debug("Created role {}", roleObj.getName());
+        return roleObj;
     }
 
     public List<RoleEntity> findAll() {
         var result = roleDAO.findAll();
-        LOG.debug("Selected {} roles", result.size());
+        LOG.debug("Selected list of {} roles", result.size());
         return result;
     }
 }
