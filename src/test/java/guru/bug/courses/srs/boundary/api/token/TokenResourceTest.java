@@ -1,7 +1,6 @@
 package guru.bug.courses.srs.boundary.api.token;
 
-import guru.bug.courses.srs.control.PasswordHashEngine;
-import guru.bug.courses.srs.control.dao.UserDAO;
+import guru.bug.courses.srs.control.UserControl;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 
@@ -11,21 +10,18 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.CoreMatchers.*;
+
 
 @QuarkusTest
 class TokenResourceTest {
 
     @Inject
-    UserDAO userDAO;
-
-    @Inject
-    PasswordHashEngine passwordHashEngine;
+    UserControl userControl;
 
     @Test
     void whenDataCorrectProvideTokenTest() throws Exception {
-        userDAO.createUser("login1t", "salt1t".getBytes(), passwordHashEngine.hash("password1t", "salt1t".getBytes()));
+        userControl.create("login1t", "salt1t", "password1t");
         Auth auth = new Auth();
         auth.setLogin("login1t");
         auth.setPassword("password1t");
@@ -41,11 +37,11 @@ class TokenResourceTest {
     }
 
     @Test
-    void whenHashesDoNotMatchFailTest() {
-        userDAO.createUser("JustLogin", "simpleSalt".getBytes(), "notHashedPass".getBytes());
+    void whenCredentialsDontMatchFailTest() throws Exception {
+        userControl.create("JustLogin", "simpleSalt", "notHashedPass");
         Auth auth = new Auth();
         auth.setLogin("JustLogin");
-        auth.setPassword("notHashedPass");
+        auth.setPassword("notHashedPassAnother");
         given()
                 .body(auth)
                 .accept(MediaType.APPLICATION_JSON)
@@ -79,9 +75,5 @@ class TokenResourceTest {
                 .then()
                 .statusCode(401);
     }
-
-
-
-
 
 }

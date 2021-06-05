@@ -1,15 +1,16 @@
 package guru.bug.courses.srs.control.token;
 
-import guru.bug.courses.srs.entity.UserEntity;
+import guru.bug.courses.srs.control.UserControl;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
-
 import java.time.ZonedDateTime;
-import java.util.UUID;
 
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @QuarkusTest
 class TokenIssuerTest {
@@ -17,19 +18,19 @@ class TokenIssuerTest {
     @Inject
     TokenIssuer issuer;
 
+    @Inject
+    UserControl userControl;
+
     @Test
-    void whenLoginExistProvideToken() {
-        UserEntity user = new UserEntity();
-        user.setId(UUID.randomUUID());
-        user.setLoginName("Login");
-        TokenData token = issuer.provideToken(user);
-        assertEquals(token.getToken().length(), 643);
+    void whenLoginExistProvideToken() throws Exception {
+        userControl.create("LoginToken", "saltToken", "passwordToken");
+        TokenData token = issuer.provideToken("LoginToken", "passwordToken");
+        assertThat(token.getToken().length(), is(greaterThan(640)));
         assertTrue(token.getExpires().isAfter(ZonedDateTime.now()));
     }
 
     @Test
-    void whenNoLoginThrowException() {
-        UserEntity user = new UserEntity();
-        assertThrows(Exception.class, () -> issuer.provideToken(user));
+    void whenNoUserThrowException() {
+        assertThrows(Exception.class, () -> issuer.provideToken("LoginNoExistent", "Password"));
     }
 }

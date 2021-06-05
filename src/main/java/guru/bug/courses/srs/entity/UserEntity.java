@@ -34,7 +34,7 @@ public class UserEntity implements Serializable {
     @Column(name = "password_hash", nullable = false)
     private byte[] passwordHash;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")

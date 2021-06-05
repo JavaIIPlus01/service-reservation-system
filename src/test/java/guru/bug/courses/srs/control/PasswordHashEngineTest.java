@@ -38,9 +38,4 @@ class PasswordHashEngineTest {
         var hash2 = passwordHashEngine.hash("password2", salt);
         assertFalse(Arrays.equals(hash1, hash2));
     }
-
-
-
-
-
 }
