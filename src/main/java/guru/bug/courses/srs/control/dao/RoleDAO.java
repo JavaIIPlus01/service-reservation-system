@@ -15,7 +15,9 @@ import java.util.UUID;
 @Singleton
 @Transactional
 public class RoleDAO {
+
     private static final Logger LOG = LoggerFactory.getLogger(RoleDAO.class);
+
     @PersistenceContext
     EntityManager em;
 
