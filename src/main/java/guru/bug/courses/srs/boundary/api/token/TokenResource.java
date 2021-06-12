@@ -1,5 +1,6 @@
 package guru.bug.courses.srs.boundary.api.token;
 
+import guru.bug.courses.srs.control.exception.ServiceException;
 import guru.bug.courses.srs.control.token.TokenData;
 import guru.bug.courses.srs.control.token.TokenIssuer;
 import org.slf4j.Logger;
@@ -27,7 +28,7 @@ public class TokenResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public TokenData login(@Valid @NotNull Auth auth) throws Exception {
+    public TokenData login(@Valid @NotNull Auth auth) throws ServiceException {
         LOG.info("Obtaining token for login name {}", auth.getLogin());
         return tokenIssuer.provideToken(auth.getLogin(), auth.getPassword());
     }

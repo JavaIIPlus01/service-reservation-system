@@ -2,6 +2,7 @@ package guru.bug.courses.srs.control.token;
 
 import guru.bug.courses.srs.control.PasswordHashEngine;
 import guru.bug.courses.srs.control.UserControl;
+import guru.bug.courses.srs.control.exception.ServiceException;
 import guru.bug.courses.srs.entity.RoleEntity;
 import io.smallrye.jwt.build.Jwt;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -31,7 +32,7 @@ public class TokenIssuer {
     @Inject
     PasswordHashEngine passwordHashEngine;
 
-    public TokenData provideToken(String loginName, String password) throws Exception {
+    public TokenData provideToken(String loginName, String password) throws ServiceException {
         var user = userControl.searchByLogin(loginName)
                 .orElseThrow(() -> new NotAuthorizedException(loginName));
         LOG.debug("Trying to obtain token for user {} {}", user.getFirstName(), user.getLastName());
