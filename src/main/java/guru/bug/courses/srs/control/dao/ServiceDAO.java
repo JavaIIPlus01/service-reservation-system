@@ -15,6 +15,7 @@ import java.util.UUID;
 @Singleton
 @Transactional
 public class ServiceDAO {
+
     private static final Logger LOG = LoggerFactory.getLogger(ServiceDAO.class);
 
     @PersistenceContext
