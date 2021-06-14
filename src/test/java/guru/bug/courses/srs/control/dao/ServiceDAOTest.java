@@ -17,15 +17,16 @@ class ServiceDAOTest {
 
     @Test
     void createAndFindService() {
-        assertDoesNotThrow(() -> serviceDAO.createService("create-service-min", 10));
+        assertDoesNotThrow(() -> serviceDAO.createService("create-service-min", "service-description",10));
         var all = serviceDAO.findAll();
         assertThat(all, is(not(empty())));
 
         var min = all.stream()
                 .filter(s -> "create-service-min".equals(s.getName())).findFirst();
         assertTrue(min.isPresent());
+        assertEquals("service-description", min.get().getDescription());
         assertEquals(10, min.get().getDefaultDuration());
-        assertNull(min.get().getDescription());
+        //assertNull(min.get().getDescription());
     }
 
 }
