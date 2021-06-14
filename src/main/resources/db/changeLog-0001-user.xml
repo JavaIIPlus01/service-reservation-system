@@ -58,4 +58,19 @@
                                  referencedTableName="roles" referencedColumnNames="id"/>
     </changeSet>
 
+    <changeSet id="insert default roles into roles table" author="Maria Romanovskaia">
+        <insert tableName="roles">
+            <column name="id" value="74d2b7b7-907c-4fc4-830c-bf424e7ec69f"/>
+            <column name="name" value="client"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="id" value="5383c73e-edb7-4fe3-aed4-9169a22cc05b"/>
+            <column name="name" value="master"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="id" value="6233b1ec-0266-45af-ae02-99afb7640457"/>
+            <column name="name" value="admin"/>
+        </insert>
+    </changeSet>
+
 </databaseChangeLog>
