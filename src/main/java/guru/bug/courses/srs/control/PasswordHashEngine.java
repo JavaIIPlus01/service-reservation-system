@@ -23,8 +23,7 @@ public class PasswordHashEngine {
             SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
             hashedPassword = f.generateSecret(spec).getEncoded();
         } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
-            LOG.error("Couldn't hash password", e);
-            throw new ServiceException("Service error occurred");
+            throw new ServiceException("Service error occurred", e);
         }
         return hashedPassword;
     }
