@@ -1,6 +1,5 @@
 package guru.bug.courses.srs.control.dao;
 
-
 import guru.bug.courses.srs.entity.ServiceEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +43,7 @@ public class ServiceDAO {
         service.setName(name);
         service.setDescription(description);
         service.setDefaultDuration(defaultDuration);
-        em.persist(service);
+        em.merge(service);
         LOG.debug("Updated service id {} -> name {}; description {}; duration {}",
                 service.getId(), service.getName(), service. getDescription(), service.getDefaultDuration());
         return service;

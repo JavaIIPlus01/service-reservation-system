@@ -28,7 +28,7 @@ public class ServiceResource {
     @POST
     @RolesAllowed({"admin"})
     public ServiceEntity createService(@Valid @NotNull ServiceEntity service) {
-        LOG.info("Creating new service with name '{}'", service.getName());
+        LOG.debug("Creating new service with name '{}'", service.getName());
         return serviceControl.createService(service);
     }
 
@@ -36,7 +36,7 @@ public class ServiceResource {
     @Path("/{serviceId}")
     @PermitAll
     public Optional<ServiceEntity> getServiceById(@PathParam("serviceId") UUID id) {
-        LOG.info("Searching for service by id {}", id);
+        LOG.debug("Searching for service by id {}", id);
         return serviceControl.findById(id);
     }
 
@@ -47,7 +47,7 @@ public class ServiceResource {
         var name = service.getName();
         var description = service.getDescription();
         var defaultDuration = service.getDefaultDuration();
-        LOG.info("Updating service id {} -> name {}; description {}; duration {}",
+        LOG.debug("Updating service id {} -> name {}; description {}; duration {}",
                 id, name, description, defaultDuration);
         return serviceControl.updateService(id, name, description, defaultDuration);
     }
@@ -55,7 +55,7 @@ public class ServiceResource {
     @GET
     @PermitAll
     public List<ServiceEntity> getServices() {
-        LOG.info("Selecting list of services...");
+        LOG.debug("Selecting list of services...");
         return serviceControl.findAll();
     }
 
