@@ -11,6 +11,6 @@ public class ServiceExceptionHandler implements ExceptionMapper<ServiceException
 
     @Override
     public Response toResponse(ServiceException exception) {
-        return Response.status(Response.Status.BAD_REQUEST).entity(exception.getMessage()).build();
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(exception.getMessage()).build();
     }
 }
