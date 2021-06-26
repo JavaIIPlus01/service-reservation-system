@@ -41,6 +41,18 @@ public class UserEntity implements Serializable {
     )
     private Set<RoleEntity> roles;
 
+    public UserEntity publicInfo() {
+        var result = new UserEntity();
+        result.setId(id);
+        result.setLoginName(loginName);
+        result.setFirstName(firstName);
+        result.setLastName(lastName);
+        result.setEmail(email);
+        result.setPhone(phone);
+        result.setRoles(roles);
+        return result;
+    }
+
     public UUID getId() {
         return id;
     }
