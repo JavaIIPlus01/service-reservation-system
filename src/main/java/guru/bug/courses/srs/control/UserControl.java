@@ -1,6 +1,7 @@
 package guru.bug.courses.srs.control;
 
 import guru.bug.courses.srs.control.dao.UserDAO;
+import guru.bug.courses.srs.control.exception.ServiceException;
 import guru.bug.courses.srs.entity.UserEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ public class UserControl {
         return userDAO.findByLoginName(login);
     }
 
-    public UserEntity create(String login, String salt, String password) throws Exception {
+    public UserEntity create(String login, String salt, String password) throws ServiceException {
         return userDAO.createUser(login, salt.getBytes(), passwordHashEngine.hash(password, salt.getBytes()));
     }
 
