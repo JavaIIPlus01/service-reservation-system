@@ -71,7 +71,7 @@ public class UserControl {
         String salt = UUID.randomUUID().toString().replace("-", "");
         byte [] pwdHash = passwordHashEngine.hash(password, salt.getBytes());
         result.ifPresentOrElse(
-                u -> userDAO.updateUser(u, login, firstName, lastName, email, phone, Objects.isNull(roles) ? u.getRoles() : convertRoles(roles), pwdHash),
+                u -> userDAO.updateUser(u, login, firstName, lastName, email, phone, Objects.isNull(roles) ? u.getRoles() : convertRoles(roles), pwdHash, salt.getBytes()),
                 () -> LOG.debug("Service {} not exist", id));
         return result;
     }
@@ -80,7 +80,7 @@ public class UserControl {
                                            String email, List<String> roles) {
         var result = findById(id);
         result.ifPresentOrElse(
-                u -> userDAO.updateUser(u, login, firstName, lastName, email, phone, Objects.isNull(roles) ? u.getRoles() : convertRoles(roles), u.getPasswordHash()),
+                u -> userDAO.updateUser(u, login, firstName, lastName, email, phone, Objects.isNull(roles) ? u.getRoles() : convertRoles(roles), u.getPasswordHash(), u.getSalt()),
                 () -> LOG.debug("Service {} not exist", id));
         return result;
     }

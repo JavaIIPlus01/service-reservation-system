@@ -36,7 +36,7 @@ class UserDAOTest {
     @Test
     void updateUser() {
         assertDoesNotThrow(() -> userDAO.createUser("login3", "password1234".getBytes(), "salt1234".getBytes(), "FirstName3", "LastName3", "Email3", "Phone3"));
-        assertDoesNotThrow(() -> userDAO.updateUser(userDAO.findByLoginName("login3").orElseThrow(), "login3", "FirstName4", "LastName4", "Email4", "Phone4", Set.of(roleDAO.findRoleByName("admin").orElseThrow()), "newPassword".getBytes()));
+        assertDoesNotThrow(() -> userDAO.updateUser(userDAO.findByLoginName("login3").orElseThrow(), "login3", "FirstName4", "LastName4", "Email4", "Phone4", Set.of(roleDAO.findRoleByName("admin").orElseThrow()), "newPassword".getBytes(), "newSalt".getBytes()));
     }
 
     @Test

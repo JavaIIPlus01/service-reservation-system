@@ -76,7 +76,7 @@ public class UserDAO {
     }
 
     public void updateUser(UserEntity user, String login, String firstName, String lastName, String email,
-                                 String phone, Set<RoleEntity> roles, byte[] pwdHash) {
+                                 String phone, Set<RoleEntity> roles, byte[] pwdHash, byte[] salt) {
         user.setLoginName(login);
         user.setFirstName(firstName);
         user.setLastName(lastName);
@@ -84,6 +84,7 @@ public class UserDAO {
         user.setPhone(phone);
         user.setRoles(roles);
         user.setPasswordHash(pwdHash);
+        user.setSalt(salt);
         em.merge(user);
         LOG.debug("Updated user id {} -> login {}; firstName {}; lastName {}; email {}; phone {}; roles {}",
                 user.getId(), user.getLoginName(), user.getFirstName(), user.getLastName(),
