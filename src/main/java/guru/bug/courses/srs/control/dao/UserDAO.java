@@ -21,6 +21,7 @@ import java.util.UUID;
 public class UserDAO {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserDAO.class);
+    private static final String CLIENT = "client";
 
     @PersistenceContext
     EntityManager em;
@@ -63,7 +64,7 @@ public class UserDAO {
     }
 
     public UserEntity createUser(String login, byte[] passwordHash, byte[] salt, String firstName, String lastName, String email, String phone) {
-        RoleEntity clientRole = roleDAO.findRoleByName("client").orElseThrow(() -> new ServiceException("Couldn't find role for client"));
+        RoleEntity clientRole = roleDAO.findRoleByName(CLIENT).orElseThrow(() -> new ServiceException("Couldn't find role for client"));
         UserEntity user = userFromBasicInfo(login, salt, passwordHash);
         user.setFirstName(firstName);
         user.setLastName(lastName);
@@ -71,17 +72,6 @@ public class UserDAO {
         user.setPhone(phone);
         user.setRoles(Set.of(clientRole));
         em.persist(user);
-        return user;
-    }
-
-    private UserEntity userFromBasicInfo(String loginName, byte[] salt, byte[] pwdHash) {
-        var id = UUID.randomUUID();
-        LOG.debug("Creating user {} with login {}", id, loginName);
-        UserEntity user = new UserEntity();
-        user.setId(id);
-        user.setLoginName(loginName);
-        user.setSalt(salt);
-        user.setPasswordHash(pwdHash);
         return user;
     }
 
@@ -98,5 +88,16 @@ public class UserDAO {
         LOG.debug("Updated user id {} -> login {}; firstName {}; lastName {}; email {}; phone {}; roles {}",
                 user.getId(), user.getLoginName(), user.getFirstName(), user.getLastName(),
                 user.getEmail(), user.getPhone(), user.getRoles());
+    }
+
+    private UserEntity userFromBasicInfo(String loginName, byte[] salt, byte[] pwdHash) {
+        var id = UUID.randomUUID();
+        LOG.debug("Creating user {} with login {}", id, loginName);
+        UserEntity user = new UserEntity();
+        user.setId(id);
+        user.setLoginName(loginName);
+        user.setSalt(salt);
+        user.setPasswordHash(pwdHash);
+        return user;
     }
 }
