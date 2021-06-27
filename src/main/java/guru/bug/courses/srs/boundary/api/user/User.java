@@ -40,7 +40,6 @@ public class User {
         this.roles = savedUser.getRoles().stream()
                 .map(RoleEntity::getName)
                 .collect(Collectors.toList());
-
     }
 
     public List<String> getRoles() {

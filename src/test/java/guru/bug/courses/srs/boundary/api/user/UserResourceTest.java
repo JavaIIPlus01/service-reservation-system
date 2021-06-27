@@ -148,8 +148,41 @@ class UserResourceTest {
                 .statusCode(401);
     }
 
+    @Test
+    void updateUserForAdminTest() throws ServiceException {
+        UserEntity savedUser = service.create("login-resource-9", "password-resource-9", "firstname-resource-9", "lastname-resource-9", "email-resource-9", "phone-resource-9");
+        UserEntity user = service.create("login-resource-10", "password-resource-10", "firstname-resource-10", "lastname-resource-10", "email-resource-10", "phone-resource-10");
+        service.updateUser(user.getId(), "login-resource-10", "firstname-resource-10", "lastname-resource-10", "phone-resource-10", "email-resource-10", List.of("admin"));
+        User userToPut = new User();
+        userToPut.setFirstName("Firstname-resource-11");
+        userToPut.setLastName("Lastname-resource-11");
+        userToPut.setEmail("Email-resource-11");
+        userToPut.setPhone("Phone-resource-11");
+        userToPut.setLoginName("Login-resource-11");
+        userToPut.setPassword("Password-resource-11");
 
+        Auth auth = new Auth();
+        auth.setLogin("login-resource-10");
+        auth.setPassword("password-resource-10");
+        var token = given()
+                .body(auth)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .when().post("/tokens")
+                .then()
+                .statusCode(200)
+                .extract().body().as(TokenData.class);
 
-
+        given()
+                .body(userToPut)
+                .accept(JSON)
+                .contentType(JSON)
+                .header(new Header("Authorization", "Bearer " + token.getToken()))
+                .when().put("/users/" + savedUser.getId().toString())
+                .then()
+                .statusCode(200)
+                .body("loginName", is("Login-resource-11"))
+                .body("id", is(savedUser.getId().toString()));
+    }
 
 }
