@@ -1,9 +1,10 @@
-package guru.bug.courses.srs.boundary;
+package guru.bug.courses.srs.boundary.api.user;
 
 import guru.bug.courses.srs.control.UserControl;
 import guru.bug.courses.srs.control.exception.ServiceException;
 import guru.bug.courses.srs.entity.UserEntity;
 import org.eclipse.microprofile.jwt.Claim;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,65 +31,70 @@ public class UserResource {
     UserControl service;
 
     @Inject
-    @Claim("uid")
-    String userIdClaim;
+    JsonWebToken jwt;
 
     @POST
     @PermitAll
-    public UserEntity register(@NotNull User user) throws ServiceException {
-        LOG.debug("Creating new user with login '{}'", user.getLogin());
-        UserEntity savedUser = service.create(user.getLogin(), user.getPassword(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhone());
-        return savedUser.publicInfo();
+    public User register(@NotNull User user) throws ServiceException {
+        LOG.debug("Creating new user with login '{}'", user.getLoginName());
+        UserEntity savedUser = service.create(user.getLoginName(), user.getPassword(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhone());
+        return new User(savedUser);
     }
 
     @GET
     @RolesAllowed({"admin"})
-    public List<UserEntity> getUsers() {
+    public List<User> getUsers() {
         return service.getAll().stream()
-                .map(UserEntity::publicInfo)
+                .map(User::new)
                 .collect(Collectors.toList());
     }
 
     @GET
     @Path("/{userId}")
     @PermitAll
-    public Optional<UserEntity> getServiceById(@PathParam("userId") UUID id) {
-        if (userIdClaim == null) {
+    public Optional<User> getServiceById(@PathParam("userId") UUID id) {
+        String idFromClaim = jwt.getClaim("uid");
+        if (idFromClaim == null) {
             throw new NotAuthorizedException("Token is not valid.");
         }
-        var idFromClaim = UUID.fromString(userIdClaim);
-        if (!id.toString().equals(userIdClaim) && !service.isAdmin(idFromClaim)) {
+        var claimId = UUID.fromString(idFromClaim);
+        if (!id.toString().equals(idFromClaim) && !service.isAdmin(claimId)) {
             throw new NotAuthorizedException(id);
         }
         LOG.debug("Searching for user by id {}", id);
-        return service.findById(id);
+        UserEntity user = service.findById(id).orElse(null);
+        return Objects.isNull(user) ? Optional.empty() : Optional.of(new User(user));
     }
+
 
     @PUT
     @Path("/{userId}")
     @PermitAll
-    public Optional<UserEntity> updateUser(@PathParam("userId") UUID id, User user) throws ServiceException {
-        if (userIdClaim == null) {
+    public Optional<User> updateUser(@PathParam("userId") UUID id, User user) throws ServiceException {
+        String idFromClaim = jwt.getClaim("uid");
+
+        if (idFromClaim == null) {
             throw new NotAuthorizedException("Token is not valid.");
         }
-        var idFromClaim = UUID.fromString(userIdClaim);
-        boolean isAdmin = service.isAdmin(idFromClaim);
-        if (!id.toString().equals(userIdClaim) && !isAdmin) {
+        var claimId = UUID.fromString(idFromClaim);
+        boolean isAdmin = service.isAdmin(claimId);
+        if (!id.toString().equals(idFromClaim) && !isAdmin) {
             throw new NotAuthorizedException(id);
         }
         var roles = user.getRoles();
-        if (Objects.nonNull(roles) && (!isAdmin || id.toString().equals(userIdClaim))) {
+        if (Objects.nonNull(roles) && (!isAdmin || id.toString().equals(idFromClaim))) {
             throw new NotAuthorizedException(roles);
         }
-        var login = user.getLogin();
+        var login = user.getLoginName();
         var firstName = user.getFirstName();
         var lastName = user.getLastName();
         var phone = user.getLastName();
         var email = user.getPhone();
         var password = user.getPassword();
         LOG.debug("Updating user id {} -> user {}", id, user);
-        return !Objects.isNull(password) ? service.updateUser(id, login, firstName, lastName, phone, email, roles, password):
-                service.updateUser(id, login, firstName, lastName, phone, email, roles);
+        UserEntity updatedUser =  !Objects.isNull(password) ? service.updateUser(id, login, firstName, lastName, phone, email, roles, password).orElse(null):
+                service.updateUser(id, login, firstName, lastName, phone, email, roles).orElse(null);
+        return Objects.isNull(updatedUser) ? Optional.empty() : Optional.of(new User(updatedUser));
     }
 
 }

@@ -1,16 +1,19 @@
-package guru.bug.courses.srs.boundary;
+package guru.bug.courses.srs.boundary.api.user;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import guru.bug.courses.srs.entity.RoleEntity;
+import guru.bug.courses.srs.entity.UserEntity;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {
 
     private UUID id;
 
-    private String login;
+    private String loginName;
 
     private String firstName;
 
@@ -23,6 +26,22 @@ public class User {
     private String password;
 
     private List<String> roles;
+
+    public User() {
+    }
+
+    public User(UserEntity savedUser) {
+        this.id = savedUser.getId();
+        this.loginName = savedUser.getLoginName();
+        this.firstName = savedUser.getFirstName();
+        this.lastName = savedUser.getLastName();
+        this.phone = savedUser.getPhone();
+        this.email = savedUser.getEmail();
+        this.roles = savedUser.getRoles().stream()
+                .map(RoleEntity::getName)
+                .collect(Collectors.toList());
+
+    }
 
     public List<String> getRoles() {
         return roles;
@@ -40,12 +59,12 @@ public class User {
         this.id = id;
     }
 
-    public String getLogin() {
-        return login;
+    public String getLoginName() {
+        return loginName;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setLoginName(String loginName) {
+        this.loginName = loginName;
     }
 
     public String getFirstName() {
@@ -92,7 +111,7 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", login='" + login + '\'' +
+                ", login='" + loginName + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", phone='" + phone + '\'' +
