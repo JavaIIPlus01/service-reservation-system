@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
+import java.util.List;
+
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.CoreMatchers.*;
@@ -89,7 +91,65 @@ class UserResourceTest {
                 .statusCode(200)
                 .body("loginName", is("login-resource-4"))
                 .body("id", is(savedUser.getId().toString()));
-
     }
+
+    @Test
+    void getServiceByIdForAdminTest() throws ServiceException {
+        UserEntity savedUser = service.create("login-resource-5", "password-resource-5", "firstname-resource-5", "lastname-resource-5", "email-resource-5", "phone-resource-5");
+        service.updateUser(savedUser.getId(), "login-resource-5", "firstname-resource-5", "lastname-resource-5", "phone-resource-5", "email-resource-5", List.of("admin"));
+        UserEntity userToSearch = service.create("login-resource-6", "password-resource-6", "firstname-resource-6", "lastname-resource-6", "email-resource-6", "phone-resource-6");
+
+        Auth auth = new Auth();
+        auth.setLogin("login-resource-5");
+        auth.setPassword("password-resource-5");
+        var token = given()
+                .body(auth)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .when().post("/tokens")
+                .then()
+                .statusCode(200)
+                .extract().body().as(TokenData.class);
+
+        given()
+                .accept(JSON)
+                .contentType(JSON)
+                .header(new Header("Authorization", "Bearer " + token.getToken()))
+                .when().get("/users/" + userToSearch.getId().toString())
+                .then()
+                .statusCode(200)
+                .body("loginName", is("login-resource-6"))
+                .body("id", is(userToSearch.getId().toString()));
+    }
+
+    @Test
+    void getServiceByIdUnauthorizedTest() throws ServiceException {
+        service.create("login-resource-7", "password-resource-7", "firstname-resource-7", "lastname-resource-7", "email-resource-7", "phone-resource-7");
+        UserEntity userToSearch = service.create("login-resource-8", "password-resource-8", "firstname-resource-8", "lastname-resource-8", "email-resource-8", "phone-resource-8");
+
+        Auth auth = new Auth();
+        auth.setLogin("login-resource-7");
+        auth.setPassword("password-resource-7");
+        var token = given()
+                .body(auth)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .when().post("/tokens")
+                .then()
+                .statusCode(200)
+                .extract().body().as(TokenData.class);
+
+        given()
+                .accept(JSON)
+                .contentType(JSON)
+                .header(new Header("Authorization", "Bearer " + token.getToken()))
+                .when().get("/users/" + userToSearch.getId().toString())
+                .then()
+                .statusCode(401);
+    }
+
+
+
+
 
 }

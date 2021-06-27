@@ -66,7 +66,6 @@ public class UserResource {
         return Objects.isNull(user) ? Optional.empty() : Optional.of(new User(user));
     }
 
-
     @PUT
     @Path("/{userId}")
     @PermitAll
