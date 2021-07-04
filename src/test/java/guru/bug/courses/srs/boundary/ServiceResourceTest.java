@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 
 @QuarkusTest
 class ServiceResourceTest {
@@ -22,13 +22,13 @@ class ServiceResourceTest {
     void getServices() {
         serviceDAO.createService("get-all-services", "all-services",20);
 
-        var resp = given()
+        given()
                 .accept(MediaType.APPLICATION_JSON)
                 .when().get("/services")
                 .then()
                 .statusCode(200)
-                .extract().body().asPrettyString();
-        System.out.println(resp);
+                .body("name", hasItem("get-all-services"))
+                .body("id", notNullValue());
     }
 
     @Test

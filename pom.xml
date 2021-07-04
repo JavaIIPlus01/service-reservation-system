@@ -80,7 +80,6 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-test-security</artifactId>
             <scope>test</scope>
-            <version>2.0.0.Final</version>
         </dependency>
     </dependencies>
     <build>
