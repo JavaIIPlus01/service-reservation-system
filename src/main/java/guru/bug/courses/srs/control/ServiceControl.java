@@ -20,8 +20,8 @@ public class ServiceControl {
     @Inject
     ServiceDAO serviceDAO;
 
-    public ServiceEntity createService(ServiceEntity service) {
-        var serviceObj = serviceDAO.createService(service.getName(), service.getDescription(), service.getDefaultDuration());
+    public ServiceEntity createService(String name, String description, int defaultDuration) {
+        var serviceObj = serviceDAO.createService(name, description, defaultDuration);
         LOG.debug("Created service {}", serviceObj.getId());
         return serviceObj;
     }
