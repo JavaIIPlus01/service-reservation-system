@@ -6,7 +6,7 @@ import guru.bug.courses.srs.entity.ServiceEntity;
 import java.util.UUID;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Service {
+public class ServiceDTO {
 
     private UUID id;
 
@@ -16,11 +16,11 @@ public class Service {
 
     private int defaultDuration;
 
-    public Service() {
+    public ServiceDTO() {
 
     }
 
-    public Service(ServiceEntity savedService) {
+    public ServiceDTO(ServiceEntity savedService) {
         this.id = savedService.getId();
         this.name = savedService.getName();
         this.description = savedService.getDescription();

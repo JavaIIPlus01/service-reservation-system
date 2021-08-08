@@ -1,6 +1,5 @@
 package guru.bug.courses.srs.boundary.api.service;
 
-import guru.bug.courses.srs.boundary.api.user.User;
 import guru.bug.courses.srs.control.ServiceControl;
 import guru.bug.courses.srs.entity.ServiceEntity;
 import org.slf4j.Logger;
@@ -30,40 +29,40 @@ public class ServiceResource {
 
     @POST
     @RolesAllowed({"admin"})
-    public Service createService(@Valid @NotNull Service service) {
+    public ServiceDTO createService(@Valid @NotNull ServiceDTO service) {
         LOG.debug("Creating new service with name '{}'", service.getName());
         ServiceEntity savedService = control.createService(service.getName(), service.getDescription(), service.getDefaultDuration());
-        return new Service(savedService);
+        return new ServiceDTO(savedService);
     }
 
     @GET
     @Path("/{serviceId}")
     @PermitAll
-    public Optional<Service> getServiceById(@PathParam("serviceId") UUID id) {
+    public Optional<ServiceDTO> getServiceById(@PathParam("serviceId") UUID id) {
         LOG.debug("Searching for service by id {}", id);
         ServiceEntity service = control.findById(id).orElse(null);
-        return Objects.isNull(service) ? Optional.empty() : Optional.of(new Service(service));
+        return Objects.isNull(service) ? Optional.empty() : Optional.of(new ServiceDTO(service));
     }
 
     @PUT
     @Path("/{serviceId}")
     @RolesAllowed({"admin"})
-    public Optional<Service> updateService(@PathParam("serviceId") UUID id, Service service) {
+    public Optional<ServiceDTO> updateService(@PathParam("serviceId") UUID id, ServiceDTO service) {
         var name = service.getName();
         var description = service.getDescription();
         var defaultDuration = service.getDefaultDuration();
         LOG.debug("Updating service id {} -> name {}; description {}; duration {}",
                 id, name, description, defaultDuration);
         ServiceEntity updatedService = control.updateService(id, name, description, defaultDuration).orElse(null);
-        return Objects.isNull(updatedService) ? Optional.empty() : Optional.of(new Service(updatedService));
+        return Objects.isNull(updatedService) ? Optional.empty() : Optional.of(new ServiceDTO(updatedService));
     }
 
     @GET
     @PermitAll
-    public List<Service> getServices() {
+    public List<ServiceDTO> getServices() {
         LOG.debug("Selecting list of services...");
         return control.findAll().stream()
-                .map(Service::new)
+                .map(ServiceDTO::new)
                 .collect(Collectors.toList());
     }
 
