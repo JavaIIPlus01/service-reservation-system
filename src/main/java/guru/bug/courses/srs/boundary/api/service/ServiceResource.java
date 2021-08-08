@@ -1,4 +1,4 @@
-package guru.bug.courses.srs.boundary;
+package guru.bug.courses.srs.boundary.api.service;
 
 import guru.bug.courses.srs.control.ServiceControl;
 import guru.bug.courses.srs.entity.ServiceEntity;
@@ -13,8 +13,10 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Path("/services")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -23,40 +25,45 @@ public class ServiceResource {
     private static final Logger LOG = LoggerFactory.getLogger(ServiceResource.class);
 
     @Inject
-    ServiceControl serviceControl;
+    ServiceControl control;
 
     @POST
     @RolesAllowed({"admin"})
-    public ServiceEntity createService(@Valid @NotNull ServiceEntity service) {
+    public ServiceDTO createService(@Valid @NotNull ServiceDTO service) {
         LOG.debug("Creating new service with name '{}'", service.getName());
-        return serviceControl.createService(service);
+        ServiceEntity savedService = control.createService(service.getName(), service.getDescription(), service.getDefaultDuration());
+        return new ServiceDTO(savedService);
     }
 
     @GET
     @Path("/{serviceId}")
     @PermitAll
-    public Optional<ServiceEntity> getServiceById(@PathParam("serviceId") UUID id) {
+    public Optional<ServiceDTO> getServiceById(@PathParam("serviceId") UUID id) {
         LOG.debug("Searching for service by id {}", id);
-        return serviceControl.findById(id);
+        ServiceEntity service = control.findById(id).orElse(null);
+        return Objects.isNull(service) ? Optional.empty() : Optional.of(new ServiceDTO(service));
     }
 
     @PUT
     @Path("/{serviceId}")
     @RolesAllowed({"admin"})
-    public Optional<ServiceEntity> updateService(@PathParam("serviceId") UUID id, ServiceEntity service) {
+    public Optional<ServiceDTO> updateService(@PathParam("serviceId") UUID id, ServiceDTO service) {
         var name = service.getName();
         var description = service.getDescription();
         var defaultDuration = service.getDefaultDuration();
         LOG.debug("Updating service id {} -> name {}; description {}; duration {}",
                 id, name, description, defaultDuration);
-        return serviceControl.updateService(id, name, description, defaultDuration);
+        ServiceEntity updatedService = control.updateService(id, name, description, defaultDuration).orElse(null);
+        return Objects.isNull(updatedService) ? Optional.empty() : Optional.of(new ServiceDTO(updatedService));
     }
 
     @GET
     @PermitAll
-    public List<ServiceEntity> getServices() {
+    public List<ServiceDTO> getServices() {
         LOG.debug("Selecting list of services...");
-        return serviceControl.findAll();
+        return control.findAll().stream()
+                .map(ServiceDTO::new)
+                .collect(Collectors.toList());
     }
 
 }
