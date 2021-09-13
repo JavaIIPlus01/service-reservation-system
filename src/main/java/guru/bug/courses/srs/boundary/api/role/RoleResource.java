@@ -1,4 +1,4 @@
-package guru.bug.courses.srs.boundary;
+package guru.bug.courses.srs.boundary.api.role;
 
 import guru.bug.courses.srs.control.RoleControl;
 import guru.bug.courses.srs.entity.RoleEntity;
@@ -12,8 +12,12 @@ import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("/roles")
+@RolesAllowed({"admin"})
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class RoleResource {
     private static final Logger LOG = LoggerFactory.getLogger(RoleResource.class);
 
@@ -21,21 +25,18 @@ public class RoleResource {
     RoleControl roleControl;
 
     @POST
-    @RolesAllowed({"admin"})
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public RoleEntity createRole(@Valid @NotNull RoleEntity role) {
+    public RoleDTO createRole(@Valid @NotNull RoleEntity role) {
         LOG.info("Creating new role with name '{}'", role.getName());
-        return roleControl.createRole(role);
+        RoleEntity savedRole = roleControl.createRole(role);
+        return new RoleDTO(savedRole);
     }
 
     @GET
-    @RolesAllowed({"admin"})
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<RoleEntity> getRoles() {
+    public List<RoleDTO> getRoles() {
         LOG.debug("Selecting list of roles...");
-        return roleControl.findAll();
+        return roleControl.findAll().stream()
+                .map(RoleDTO::new)
+                .collect(Collectors.toList());
     }
 
 }
