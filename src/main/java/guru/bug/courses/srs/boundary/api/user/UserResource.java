@@ -52,7 +52,7 @@ public class UserResource {
     @GET
     @Path("/{userId}")
     @PermitAll
-    public Optional<User> getServiceById(@PathParam("userId") UUID id) {
+    public Optional<User> getUserById(@PathParam("userId") UUID id) {
         String idFromClaim = jwt.getClaim("uid");
         if (idFromClaim == null) {
             throw new NotAuthorizedException("Token is not valid.");
