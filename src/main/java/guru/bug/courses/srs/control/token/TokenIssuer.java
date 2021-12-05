@@ -49,6 +49,10 @@ public class TokenIssuer {
                 .expiresAt(expires.toInstant())
                 .sign();
 
-        return new TokenData(token, expires);
+        return new TokenData(token, expires, user.getLoginName(), user.getFirstName(), user.getLastName(),
+                user.getPhone(), user.getEmail(),
+                user.getRoles().stream()
+                .map(RoleEntity::getName)
+                .collect(Collectors.toList()));
     }
 }
